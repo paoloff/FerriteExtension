@@ -1,0 +1,8 @@
+[deps]
+Ferrite = "c061571e-ce09-4baa-9e4a-890a7ed10832"
+Tensors = "48a634ad-e948-5137-8d70-aa71f2a747f4"
+ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
