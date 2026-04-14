@@ -1,35 +1,5 @@
 # Analytical SVK polynomial tensor extraction — no AD.
-#
-# For Saint-Venant Kirchhoff the element internal force is exactly cubic in
-# the element DOFs, so K1e, K2e, K3e can be written in closed form from the
-# shape-function gradients and Lamé parameters, without touching ForwardDiff.
-#
-# Output convention matches extract_elem_tensors (ForwardDiff version):
-#   f^a(u) = Σ_β K1e[a,β] u_β
-#          + Σ_{β,γ}   K2e[a,β,γ]   u_β u_γ
-#          + Σ_{β,γ,δ} K3e[a,β,γ,δ] u_β u_γ u_δ
-# with the Taylor factors ½ and 1/6 already baked in and K2e/K3e symmetric
-# in their trailing indices.
-#
-# Derivation (one quadrature point; flat index B^a_{IJ} = geom.∇N[(I-1)*dim+J, a, qp]):
-#
-#   ∇u_{IM} = Σ_α u_α B^α_{IM}
-#   E_{IJ}  = ½(∇u_{IJ} + ∇u_{JI} + Σ_K ∇u_{KI} ∇u_{KJ}) = E1 + E2
-#     E1_{IJ}(u)   = Σ_α u_α L^α_{IJ},         L^α_{IJ} = ½(B^α_{IJ} + B^α_{JI})
-#     E2_{MJ}(u,u) = Σ_{p,q} u_p u_q G^{pq}_{MJ}, G^{pq}_{MJ} = ½ Σ_K B^p_{KM} B^q_{KJ}
-#   S = λ·tr(E)·I + 2μ E  →  S1 = Σ_α u_α C^α,  S2 = Σ_{p,q} u_p u_q D^{pq}
-#     C^α_{IJ}     = λ·tr(L^α)·δ_{IJ} + 2μ L^α_{IJ}
-#     D^{pq}_{IJ}  = λ·tr(G^{pq})·δ_{IJ} + 2μ G^{pq}_{IJ}
-#   P = F · S = (I + ∇u)·S splits by order as:
-#     P1 = S1
-#     P2 = S2 + ∇u·S1
-#     P3 = ∇u·S2
-#   f^a = ∫ P : ∇N^a dΩ  →  per order:
-#     f1^a = Σ_{qp} w Σ_{IJ}  B^a_{IJ} C^β_{IJ}                       · u_β
-#     f2^a = Σ_{qp} w Σ_{IJ}  B^a_{IJ} D^{pq}_{IJ}                    · u_p u_q
-#          + Σ_{qp} w Σ_{IMJ} B^a_{IJ} B^β_{IM} C^γ_{MJ}              · u_β u_γ
-#     f3^a = Σ_{qp} w Σ_{IMJ} B^a_{IJ} B^β_{IM} D^{pq}_{MJ}           · u_β u_p u_q
-#
+
 # K2raw and K3raw below are the un-symmetrized coefficients of u_β u_γ and
 # u_β u_p u_q; K2e and K3e are obtained by symmetrizing over the trailing
 # indices so they match the ½-Hessian / (1/6)-third-derivative convention
